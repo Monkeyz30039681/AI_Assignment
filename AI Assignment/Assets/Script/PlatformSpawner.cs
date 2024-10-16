@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlatformSpawner : MonoBehaviour
 {
-    public GameObject platformPrefab; // The platform to spawn
+    public GameObject staticPlatformPrefab; // The static platform prefab to spawn
+    public GameObject movingPlatformPrefab; // The moving platform prefab to spawn
     public float spawnDistance = 10f; // Distance above the player to spawn new platforms
-    public int platformCount = 5;     // Number of platforms to spawn initially
+    public int platformCount = 5; // Number of platforms to spawn initially
     public float minX = -3f, maxX = 3f; // Horizontal range for platform spawning
     public float minYGap = 2f, maxYGap = 5f; // Vertical gap range between platforms
 
@@ -44,8 +45,11 @@ public class PlatformSpawner : MonoBehaviour
     void SpawnPlatform(float yPosition)
     {
         float randomX = Random.Range(minX, maxX); // Random X position within range
-        Vector3 spawnPos = new Vector3(randomX, yPosition, 0f);
 
+        // Randomly decide whether to spawn a static or moving platform
+        GameObject platformPrefab = Random.Range(0, 2) == 0 ? staticPlatformPrefab : movingPlatformPrefab;
+
+        Vector3 spawnPos = new Vector3(randomX, yPosition, 0f);
         GameObject newPlatform = Instantiate(platformPrefab, spawnPos, Quaternion.identity);
         platforms.Add(newPlatform); // Add to the list of active platforms
 

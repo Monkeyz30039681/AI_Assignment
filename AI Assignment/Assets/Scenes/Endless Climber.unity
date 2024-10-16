@@ -151,12 +151,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 815c1fb07a57ef14c9bb9616ec4ca0d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformPrefab: {fileID: 4961451979466527771, guid: b8f009c43d1ba264faacbc4a8dfef8e2, type: 3}
+  staticPlatformPrefab: {fileID: 4961451979466527771, guid: b8f009c43d1ba264faacbc4a8dfef8e2, type: 3}
+  movingPlatformPrefab: {fileID: 3379797279292740591, guid: cb283ecf2e5ba5e4db3ae97450808ac0, type: 3}
   spawnDistance: 10
   platformCount: 5
   minX: -3
   maxX: 5
-  minYGap: 3
+  minYGap: 4
   maxYGap: 5
 --- !u!4 &87875628
 Transform:
