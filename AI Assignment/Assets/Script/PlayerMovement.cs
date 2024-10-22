@@ -12,7 +12,8 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundLayer;
     public GameObject gameOverUI;
     public TextMeshProUGUI scoreText; // Use TextMeshProUGUI for the score text
-    public TextMeshProUGUI gameOverScoreText; // TextMeshProUGUI for the score display on the Game Over UI
+    public TextMeshProUGUI gameOverScoreText; // Text for displaying the final score on Game Over
+    public int score = 0; // The player's score
 
     private Rigidbody rb;
     private bool isGrounded;
@@ -22,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 initialPosition = new Vector3(0f, 1.5f, 0f); // Starting position
     private bool isGameOver = false;
     private float highestPoint = 0f; // Track the highest point reached
-    private int score = 0; // The player's score
+    
 
     void Start()
     {
@@ -95,12 +96,12 @@ public class PlayerMovement : MonoBehaviour
         isGameOver = true; // Prevent further movement and updates
         Time.timeScale = 0; // Pause the game
 
-        // Hide the in-game score text
+        // Hide the score text during Game Over
         scoreText.gameObject.SetActive(false);
 
         // Display the final score on the Game Over screen
         gameOverScoreText.text = "Final Score: " + score.ToString();
-        gameOverScoreText.gameObject.SetActive(true); // Show the score on Game Over UI
+        gameOverScoreText.gameObject.SetActive(true); // Ensure the score text is visible on the Game Over screen
     }
 
     void OnCollisionEnter(Collision collision)
@@ -162,7 +163,7 @@ public class PlayerMovement : MonoBehaviour
         highestPoint = transform.position.y; // Reset the highest point
         score = 0; // Reset the score
         UpdateScore(); // Update the score UI at the start
-        scoreText.gameObject.SetActive(true); // Ensure the score text is visible when game restarts
+        scoreText.gameObject.SetActive(true); // Ensure the score text is visible when the game restarts
         gameOverScoreText.gameObject.SetActive(false); // Hide Game Over score on restart
     }
 }
