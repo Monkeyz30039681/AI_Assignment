@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;// For using UI elements like Text
 using UnityEngine.SceneManagement;
+using TMPro; // Import TextMeshPro namespace for UI
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 5f;
     public LayerMask groundLayer;
     public GameObject gameOverUI;
+    public TextMeshProUGUI scoreText; // Use TextMeshProUGUI for the score text
+    public TextMeshProUGUI gameOverScoreText; // Text for displaying the final score on Game Over
+    public int score = 0; // The player's score
 
     private Rigidbody rb;
     private bool isGrounded;
@@ -17,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 initialPosition = new Vector3(0f, 1.5f, 0f); // Starting position
     private bool isGameOver = false;
+    private float highestPoint = 0f; // Track the highest point reached
+    
 
     void Start()
     {
@@ -24,6 +31,9 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = false; // Assume the player is not grounded at the start
         gameOverUI.SetActive(false); // Hide Game Over UI initially
         ResetPlayer(); // Reset player position and state at the start
+
+        highestPoint = transform.position.y; // Initialize the highest point
+        UpdateScore(); // Update the score at the start
     }
 
     void Update()
@@ -33,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
             HandleMovement();
             HandleFallTimer();
             CheckFloorStatus();
+            UpdateScore(); // Update the score continuously based on height
         }
     }
 
@@ -68,11 +79,29 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void UpdateScore()
+    {
+        // Check if the player has reached a new highest point
+        if (transform.position.y > highestPoint)
+        {
+            highestPoint = transform.position.y;
+            score = Mathf.FloorToInt(highestPoint); // Convert height to score
+            scoreText.text = "Score: " + score.ToString(); // Update score UI
+        }
+    }
+
     void GameOver()
     {
         gameOverUI.SetActive(true);
         isGameOver = true; // Prevent further movement and updates
         Time.timeScale = 0; // Pause the game
+
+        // Hide the score text during Game Over
+        scoreText.gameObject.SetActive(false);
+
+        // Display the final score on the Game Over screen
+        gameOverScoreText.text = "Final Score: " + score.ToString();
+        gameOverScoreText.gameObject.SetActive(true); // Ensure the score text is visible on the Game Over screen
     }
 
     void OnCollisionEnter(Collision collision)
@@ -91,7 +120,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // Check if player is touching the starting floor and destroy it after leaving
     void CheckFloorStatus()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, 0.5f);
@@ -104,7 +132,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // If player leaves the floor, despawn it
         GameObject floor = GameObject.FindWithTag("Floor");
         if (floor != null && !isGrounded)
         {
@@ -133,5 +160,10 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = true; // Assume grounded state at the start
         fallTimer = 0f; // Reset fall timer
         rb.velocity = Vector3.zero; // Reset any velocity
+        highestPoint = transform.position.y; // Reset the highest point
+        score = 0; // Reset the score
+        UpdateScore(); // Update the score UI at the start
+        scoreText.gameObject.SetActive(true); // Ensure the score text is visible when the game restarts
+        gameOverScoreText.gameObject.SetActive(false); // Hide Game Over score on restart
     }
 }
